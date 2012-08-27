@@ -1,0 +1,25 @@
+task :lint do
+    sh "jshint static/js/ tests/"
+end
+
+task :start do 
+    sh "./build/server.sh start"
+end
+
+task :stop do
+    sh "./build/server.sh stop"
+end
+
+task :devTest do
+    sh "./build/runtests.sh --tests all"
+end
+
+task :test do
+    sh "./build/server.sh start"
+    sleep 2
+    sh "./build/runtests.sh --tests all"
+    sh "./build/server.sh stop"
+end
+
+task :development => ['lint', 'devTest']
+task :default => ['lint', 'test']
