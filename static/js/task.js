@@ -47,6 +47,16 @@ Task.prototype._findTags = function () {
     this._tags = tags;
 };
 
+Task.prototype.getHighlighted = function () {
+    var html = this._task;
+
+    html = html.replace(/(\@[a-zA-Z0-9_]+)/g, "<span class=\"assign\">$1</span>")
+        .replace(/(\![a-zA-Z0-9_]+)/g, "<span class=\"notify\">$1</span>")
+        .replace(/(\#[a-zA-Z0-9_]+)/g, "<span class=\"tag\">$1</span>");
+
+    return html;
+};
+
 Task.prototype.toJSON = function () {
     return {
         task: this._task,

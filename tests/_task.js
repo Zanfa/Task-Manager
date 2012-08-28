@@ -58,5 +58,13 @@ TestCase("TaskTestCase", {
             "notify":[],
             "tags":["Foo", "Bar", "Test"]
         }, task.toJSON());
+    },
+
+    testHighlight: function() {
+        var task = new Task("Do this @Foo !Bar #Test");
+
+        assertEquals("Do this <span class=\"assign\">@Foo</span> " +
+            "<span class=\"notify\">!Bar</span> " +
+            "<span class=\"tag\">#Test</span>", task.getHighlighted());
     }
 });
