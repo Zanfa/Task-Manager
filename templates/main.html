@@ -2,21 +2,46 @@
 <html>
 <head>
     <title>TaskManager</title>
+    <link rel="stylesheet" href="/static/reset-min.css" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="/static/style.css"
-          type="text/css" />
+    <link rel="stylesheet" href="/static/style.css" type="text/css">
+    <script src="/static/js/task.js"></script>
+    <script src="static/js/jquery-1.8.0.min.js"></script>
+    <script>
+        $(function () {
+            $('#task').keydown(function (e) {
+                setTimeout(function() {
+                    var task = new Task($(e.target).val());
+                    $('#highlighter').html(task.getHighlighted());
+                }, 1);
+            });
+        });
+    </script>
 </head>
 <body>
     <h1 class="center">Task Manager</h1>
-    <div class="content center">
-        <div class="header">
-            <div class="textarea">Review his resume and code submission
-                <span class="assign">@Avram</span> <span class="assign">@Vahur</span>
-                <span class="notify">!Pak</span> <span class="tag">#ENG</span></div>
-            <textarea id="test" autocomplete="off"
-                    placeholder="What needs to get done? TAG @assign !notify #tag"
-                    rows="2">Review his resume and code submission @Avram @Vahur !Pak #ENG</textarea>
-        </div>
+    <div class="content center header">
+            <div class="textarea decorated" id="highlighter"></div>
+            <textarea id="task" autocomplete="off"
+                    placeholder="What needs to get done? (Use @assign !notify #tag)" rows="2"></textarea>
     </div>
+
+    <h2 class="center"><span>#ENG (2)</span></h2>
+
+    <ol class="tasklist center">
+        <li class="decorated description">
+            Tere mis toimub <span class="assign">@Jason</span>
+            <span class="notify">!Pak</span>
+            <span class="notify">!Bill</span>
+            <span class="tag">#ENG</span>
+        </li>
+        <li class="decorated description">
+            Tere mis toimub <span class="assign">@Jason</span>
+            <span class="notify">!Pak</span>
+            <span class="notify">!Bill</span>
+            <span class="tag">#ENG</span>
+        </li>
+    </ol>
+
 </body>
 </html>
