@@ -5,42 +5,112 @@
     <link rel="stylesheet" href="/static/reset-min.css" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="/static/style.css" type="text/css">
-    <script src="/static/js/task.js"></script>
-    <script src="static/js/jquery-1.8.0.min.js"></script>
+    <script src="static/js/task.js"></script>
+    <script src="static/external/jquery-1.8.0.min.js"></script>
     <script>
+        if (typeof String.prototype.startsWith != 'function') {
+            // see below for better implementation!
+            String.prototype.startsWith = function (str){
+                return this.indexOf(str) == 0;
+            };
+        }
+
+        var users = {{ users|tojson|safe }};
+
+        function complete(task) {
+            var words, match, i, len, name;
+
+            words = task.split(' ');
+
+            if (words.length === 0)
+                return task;
+
+            match = words[words.length - 1].match(/^(@|!|\.)([a-zA-z]+)$/);
+            if (match === null)
+                return task;
+
+            for (i = 0, len = users.length; i < len; i++) {
+                name = users[i].name;
+                if (name.toUpperCase().startsWith(match[2].toUpperCase()))
+                    words[words.length - 1] = match[1] + name + ' ';
+            }
+
+
+            return words.join(' ');
+        }
+
         $(function () {
             $('#task').keydown(function (e) {
+                var target = $(e.target);
+
                 setTimeout(function() {
-                    var task = new Task($(e.target).val());
+
+                    var autocompletedTask = complete(target.val());
+                    var task = new Task(autocompletedTask);
+                    target.val(autocompletedTask).focus();
                     $('#highlighter').html(task.getHighlighted());
+
+                    if (e.keyCode === 13) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/task/add',
+                            data: JSON.stringify(task.toJSON()),
+                            success: function (e) {
+                                //console.log(e);
+                                window.location = window.location;
+                            },
+                            contentType: 'application/json'
+                        });
+                    }
+
                 }, 1);
+
+                if (e.keyCode === 8) {
+                    var words = target.val().split(' ');
+                    if (words.length >= 2) {
+                        if (words[words.length - 1] != '')
+                            return;
+
+                        var lastWord = words[words.length - 2];
+                        var match = lastWord.match(/^(@|!|\.)([a-zA-z]+)$/);
+                        if (match == null)
+                            return;
+
+                        words.splice(words.length - 1);
+                        words[words.length - 1] = match[1];
+                        target.val(words.join(' '));
+                        e.preventDefault();
+                    }
+                } else if (e.keyCode === 13)
+                    e.preventDefault();
+            }).focus();
+
+            $('#task').keyup(function(e) {
+                var heightDiff = this.scrollHeight + parseFloat($(this).css("borderTopWidth")) +
+                        parseFloat($(this).css("borderBottomWidth")) - $(this).outerHeight();
+                var newHeight = $(this).height() + heightDiff;
+                $(this).height(newHeight);
+                $('#highlighter').height(newHeight);
             });
         });
     </script>
 </head>
 <body>
-    <h1 class="center">Task Manager</h1>
+    <h1 class="center">Task Manager <span class="user">{{ user }}</span></h1>
     <div class="content center header">
             <div class="textarea decorated" id="highlighter"></div>
             <textarea id="task" autocomplete="off"
-                    placeholder="What needs to get done? (Use @assign !notify #tag)" rows="2"></textarea>
+                    placeholder="What needs to get done? (Use @assign !notify #tag)" rows="1"></textarea>
     </div>
 
-    <h2 class="center"><span>#ENG (2)</span></h2>
+    <h2 class="center"><span>#ENG ({{ count }})</span></h2>
 
     <ol class="tasklist center">
+        {% for task in tasks %}
         <li class="decorated description">
-            Tere mis toimub <span class="assign">@Jason</span>
-            <span class="notify">!Pak</span>
-            <span class="notify">!Bill</span>
-            <span class="tag">#ENG</span>
+            {{ task.description|safe }}
         </li>
-        <li class="decorated description">
-            Tere mis toimub <span class="assign">@Jason</span>
-            <span class="notify">!Pak</span>
-            <span class="notify">!Bill</span>
-            <span class="tag">#ENG</span>
-        </li>
+        {% endfor %}
     </ol>
 
 </body>

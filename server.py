@@ -1,14 +1,11 @@
 from flask import Flask, render_template
-from flaskext.mongoalchemy import MongoAlchemy
+from flask.ext.pymongo import PyMongo
+
 app = Flask(__name__)
-app.config['MONGOALCHEMY_DATABASE'] = 'TaskManager'
-db = MongoAlchemy(app)
+app.config['MONGO_DBNAME'] = 'TaskManager'
+mongo = PyMongo(app)
 
-@app.route('/')
-def main():
-    return render_template('main.html')
-
-
+from views import *
 
 if __name__ == "__main__":
     app.run(debug = True)
