@@ -5,38 +5,15 @@
     <link rel="stylesheet" href="/static/reset-min.css" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="/static/style.css" type="text/css">
-    <script src="static/js/task.js"></script>
     <script src="static/external/jquery-1.8.0.min.js"></script>
+    <script src="static/js/util.js"></script>
+    <script src="static/js/task.js"></script>
     <script>
-        if (typeof String.prototype.startsWith != 'function') {
-            // see below for better implementation!
-            String.prototype.startsWith = function (str){
-                return this.indexOf(str) == 0;
-            };
-        }
 
         var users = {{ users|tojson|safe }};
 
         function complete(task) {
-            var words, match, i, len, name;
 
-            words = task.split(' ');
-
-            if (words.length === 0)
-                return task;
-
-            match = words[words.length - 1].match(/^(@|!|\.)([a-zA-z]+)$/);
-            if (match === null)
-                return task;
-
-            for (i = 0, len = users.length; i < len; i++) {
-                name = users[i].name;
-                if (name.toUpperCase().startsWith(match[2].toUpperCase()))
-                    words[words.length - 1] = match[1] + name + ' ';
-            }
-
-
-            return words.join(' ');
         }
 
         $(function () {
@@ -45,9 +22,8 @@
 
                 setTimeout(function() {
 
-                    var autocompletedTask = complete(target.val());
-                    var task = new Task(autocompletedTask);
-                    target.val(autocompletedTask).focus();
+                    var task = new Task(target.val());
+                    target.val(task._raw).focus();
                     $('#highlighter').html(task.getHighlighted());
 
                     if (e.keyCode === 13) {
@@ -81,7 +57,7 @@
                         target.val(words.join(' '));
                         e.preventDefault();
                     }
-                } else if (e.keyCode === 13)
+                } else if (e.keyCode === 13 || e.keyCode === 9)
                     e.preventDefault();
             }).focus();
 
