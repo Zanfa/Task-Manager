@@ -48,7 +48,7 @@
                             return;
 
                         var lastWord = words[words.length - 2];
-                        var match = lastWord.match(/^(@|!|\.)([a-zA-z]+)$/);
+                        var match = lastWord.match(/^(@|!|#)([a-zA-z]+)$/);
                         if (match == null)
                             return;
 
@@ -68,6 +68,12 @@
                 $(this).height(newHeight);
                 $('#highlighter').height(newHeight);
             });
+
+            $(document.body).on('click', '.completable',
+                    function (e) {
+                        $(e.target).toggleClass('complete');
+                        e.preventDefault();
+                    });
         });
     </script>
 </head>

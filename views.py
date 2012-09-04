@@ -1,16 +1,8 @@
 from flask.globals import request
 from flask.templating import render_template
 from util.task_parser import decorate
-#from models import Task, User
 
 from server import app, mongo
-
-#@app.route('/<user>')
-#def main(user=None):
-#    user = User.query.filter(User.name==user).first()
-#    tasks = Task.query.all()
-#    return render_template('main.html', tasks=tasks, user=user.name)
-from util import task_parser
 
 @app.route('/')
 def main():
@@ -19,7 +11,7 @@ def main():
 @app.route('/<user>')
 def user_home(user=None):
     currentUser = mongo.db.User.find_one_or_404({'name': user})
-    tasks = mongo.db.Task.find({'users': currentUser['_id']})
+    tasks = mongo.db.Task.find({'users': {'user': currentUser['_id'], 'isCompleted': False}})
     users = list(mongo.db.User.find(fields=['name']))
     for user in users:
         user[u'_id'] = str(user[u'_id'])
@@ -44,7 +36,7 @@ def task_add():
         users.append({u'name': user})
 
     for user in mongo.db.User.find({'$or': users }):
-        task['users'].append(user['_id'])
+        task['users'].append({'user': user['_id'], 'isCompleted': False})
 
     mongo.db.Task.insert(task)
     return str(task)

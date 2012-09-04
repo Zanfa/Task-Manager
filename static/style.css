@@ -62,7 +62,7 @@ textarea {
     position: absolute;
     color: rgba(0, 0, 0, 0);
     background: white;
-    height: 56px;
+    height: 27px;
     top: 0px;
 }
 
@@ -79,6 +79,15 @@ textarea {
 
 .decorated .tag, h2 span {
     background: #C5EAF8;
+}
+
+.decorated .completable {
+    cursor: pointer;
+}
+
+.decorated .complete {
+    background: #EEEEEE !important;
+    text-decoration: line-through;
 }
 
 .user {
