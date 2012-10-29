@@ -4,6 +4,9 @@ if (typeof String.prototype.startsWith !== 'function') {
     };
 }
 
+/**
+ * @param {String} namespace
+ */
 function define (namespace) {
     var i, steps, 
         currentPackage = window;
