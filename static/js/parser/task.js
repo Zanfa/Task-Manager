@@ -12,9 +12,7 @@ Parser.Task = function (description, tags) {
      */
     this.description = description;
 
-    /**
-     * @private
-     * @type {Array.<Parser.Tag>} */
+    /** @type {Array.<Parser.Tag>} */
     this.tags = tags;
 
     this.tags.sort(Parser.Tag.sortByLocation);

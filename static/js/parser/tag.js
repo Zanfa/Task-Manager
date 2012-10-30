@@ -88,6 +88,3 @@ Parser.Tag.DECORATOR_CLASS = {
 Parser.Tag.sortByLocation = function (a, b) {
     return a.location - b.location;
 };
-
-/** @type {Array.<Parser.Tag>} */
-Parser.Tags = [];
