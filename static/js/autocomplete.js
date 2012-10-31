@@ -70,8 +70,8 @@ Autocomplete.completeTag = function (tag, action) {
     for (i = 0, len = Autocomplete.Tags.length; i < len; i++) {
         potentialMatchTag = Autocomplete.Tags[i];
 
-        if (potentialMatchTag.value.startsWith(tag.value) &&
-                potentialMatchTag.value !== tag.value) {
+        if (potentialMatchTag.value.toUpperCase().startsWith(tag.value.toUpperCase()) &&
+                potentialMatchTag.value.toUpperCase() !== tag.value.toUpperCase()) {
 
             return potentialMatchTag.value;
         }
