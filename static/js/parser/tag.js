@@ -21,6 +21,11 @@ Parser.Tag = function (type, value, action, location) {
     this.location = location;
 };
 
+/** @return {string} */
+Parser.Tag.prototype.getValueWithAction = function () {
+    return this.action + this.value;
+}
+
 /** @return {number} */
 Parser.Tag.prototype.getLength = function () {
     return this.value.length + this.action.length;

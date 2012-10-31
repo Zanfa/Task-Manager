@@ -9,6 +9,7 @@
     <script src="static/external/rangy-core.js"></script>
     <script src="static/external/textinputs_jquery.js"></script>
     <script src="static/js/util.js"></script>
+    <script src="static/js/user.js"></script>
     <script src="static/js/parser/parser.js"></script>
     <script src="static/js/parser/tag.js"></script>
     <script src="static/js/parser/task.js"></script>
@@ -26,41 +27,47 @@
             var task = Parser.parse(TEST_STRING);
             $('#decorated').html(task.decorate());
 
-            $("#task").keyup(function (e) {
-                var range = $(e.target).getSelection();
-                var description = $(e.target).val();
-                var task = Parser.parse(description);
-                $('#decorated').html(task.decorate());
+            $("#task").keydown(function (e) {
+                setTimeout(function () {
+                    var range = $(e.target).getSelection();
+                    var description = $(e.target).val();
+                    var task = Parser.parse(description);
+                    $('#decorated').html(task.decorate());
 
+                    if (range.start === range.end) {
+                        var root = $("#decorated")[0];
+                        var offsetSum = 0;
+                        var node = root.childNodes[0];
 
-                if (range.start === range.end) {
-                    var root = $("#decorated")[0];
-                    var offsetSum = 0;
-                    var node = root.childNodes[0];
+                        while (offsetSum < range.start) {
+                            if (node.hasChildNodes())
+                                node = node.childNodes[0];
 
-                    while (offsetSum < range.start) {
-                        if (node.hasChildNodes())
-                            node = node.childNodes[0];
+                            if (offsetSum + node.textContent.length < range.start) {
+                                offsetSum += node.textContent.length;
+                                if (node.nextSibling)
+                                    node = node.nextSibling;
+                                else
+                                    node = node.parentNode.nextSibling;
+                                continue;
+                            }
 
-                        if (offsetSum + node.textContent.length < range.start) {
-                            offsetSum += node.textContent.length;
-                            if (node.nextSibling)
-                                node = node.nextSibling;
-                            else
-                                node = node.parentNode.nextSibling;
-                            continue;
+                            var offset = range.start - offsetSum;
+                            var cursorRange = rangy.createRange();
+                            cursorRange.setStart(node, offset);
+                            cursorRange.collapse(true);
+                            cursorRange.insertNode($("<span class='cursor'>&nbsp;</span>")[0]);
+                            break;
                         }
-
-                        var offset = range.start - offsetSum;
-                        var cursorRange = rangy.createRange();
-                        cursorRange.setStart(node, offset);
-                        cursorRange.collapse(true);
-                        cursorRange.insertNode($("<span class='cursor'>&nbsp;</span>")[0]);
-                        break;
                     }
-                }
 
-                Autocomplete.complete(task, range.start);
+                    var action = (e.keyCode === 8) ? User.Action.BACKSPACE : User.Action.TYPE;
+
+                    if (e.keyCode >= 37 && e.keyCode <= 40)
+                        action = User.Action.ARROW_KEY;
+
+                    Autocomplete.complete(task, range.start, action);
+                }, 1);
             });
         });
 

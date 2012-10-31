@@ -6,10 +6,7 @@ var Parser = Parser || {};
  * @param {Array.<Parser.Tag>} tags
  */
 Parser.Task = function (description, tags) {
-    /**
-     * @private
-     * @type {string}
-     */
+    /** @type {string} */
     this.description = description;
 
     /** @type {Array.<Parser.Tag>} */
