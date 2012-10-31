@@ -38,7 +38,7 @@ Autocomplete.complete = function (task, cursorIndex, action) {
         }
     }
 
-    if (activeTag && action !== User.Action.ARROW_KEY) {
+    if (activeTag && action !== User.Action.ARROW_KEY && action !== User.Action.AUTOCOMPLETE) {
         /** @type {string} */
         var newValue = Autocomplete.completeTag(activeTag, action);
         Autocomplete.replaceTagValue(task, activeTag, newValue);
