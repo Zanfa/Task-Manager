@@ -13,8 +13,19 @@ Parser.parse = function (description, previouslyParsedTask) {
     var result, tag, tags = [];
 
     while (result = Parser.TAG_REGEXP.exec(description)) {
-        console.log(result.index, result);
-        tag = new Parser.Tag(Parser.Tag.TYPE.USER, result[2], result[1], result.index);
+        var i, len;
+        tag = new Parser.Tag(Parser.Tag.TYPE.UNKNOWN, result[2], result[1], result.index);
+
+        for (i = 0, len = Autocomplete.Tags.length; i < len; i++) {
+            var potentialMatchTag = Autocomplete.Tags[i];
+
+            if (potentialMatchTag.value.toUpperCase() === tag.value.toUpperCase() &&
+                Parser.Tag.doActionAndTypeMatch(tag, potentialMatchTag)) {
+
+                tag.type = potentialMatchTag.type;
+            }
+        }
+
         tags.push(tag);
     }
 

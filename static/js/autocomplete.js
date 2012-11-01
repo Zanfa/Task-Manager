@@ -66,11 +66,15 @@ Autocomplete.completeTag = function (tag, action) {
         return "";
     }
 
+    if (tag.type !== Parser.Tag.TYPE.UNKNOWN)
+        return tag.value;
+
     for (i = 0, len = Autocomplete.Tags.length; i < len; i++) {
         potentialMatchTag = Autocomplete.Tags[i];
 
         if (potentialMatchTag.value.toUpperCase().startsWith(tag.value.toUpperCase()) &&
-                potentialMatchTag.value.toUpperCase() !== tag.value.toUpperCase()) {
+                potentialMatchTag.value.toUpperCase() !== tag.value.toUpperCase() &&
+                Parser.Tag.doActionAndTypeMatch(tag, potentialMatchTag)) {
 
             return potentialMatchTag.value;
         }

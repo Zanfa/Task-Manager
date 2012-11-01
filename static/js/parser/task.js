@@ -27,6 +27,9 @@ Parser.Task.prototype.decorate = function () {
         var tag, prefix, name, suffix;
         tag = this.tags[i];
 
+        if (tag.type === Parser.Tag.TYPE.UNKNOWN)
+            continue;
+
         prefix = result.substr(0, tag.location);
         name = result.substr(tag.location, tag.getLength());
         suffix = result.substr(tag.location + tag.getLength(), result.length);

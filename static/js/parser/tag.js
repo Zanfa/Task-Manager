@@ -57,13 +57,36 @@ Parser.Tag.prototype.decorate = function (value) {
 };
 
 /**
+ * @param {Parser.Tag} actionTag
+ * @param {Parser.Tag} typeTag
+ *
+ * @return {boolean}
+ */
+Parser.Tag.doActionAndTypeMatch = function (actionTag, typeTag) {
+    // Check categorization matches first
+    if (actionTag.action === Parser.Tag.ACTION.CATEGORIZE &&
+            typeTag.type === Parser.Tag.TYPE.CATEGORY)
+        return true;
+    else if (typeTag.type === Parser.Tag.TYPE.CATEGORY)
+        return false;
+
+    // Only users and groups left
+    if (actionTag.action === Parser.Tag.ACTION.ASSIGN ||
+        actionTag.action === Parser.Tag.ACTION.NOTIFY)
+        return true;
+
+    return false;
+}
+
+/**
  * @const
  * @enum {number}
  */
 Parser.Tag.TYPE = {
     USER: 0,
     GROUP: 1,
-    CATEGORY: 2
+    CATEGORY: 2,
+    UNKNOWN: 3
 };
 
 /**
