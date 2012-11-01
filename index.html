@@ -32,13 +32,22 @@
                     var range = $(e.target).getSelection();
                     var task = Parser.parse($(e.target).val());
 
+                    if (e.metaKey && e.keyCode !== 86)
+                        return;
+
                     var action = (e.keyCode === 8) ? User.Action.BACKSPACE : User.Action.TYPE;
 
                     if (e.keyCode >= 37 && e.keyCode <= 40)
                         action = User.Action.ARROW_KEY;
 
-                    User.updateInput(task, range.start);
-                    Autocomplete.complete(task, range.start, action);
+                    User.updateInput(task, new User.Range(range.start, range.end));
+                    Autocomplete.complete(task, new User.Range(range.start, range.end), action);
+                }, 1);
+            }).on('paste', function (e) {
+                setTimeout(function () {
+                    var range = $(e.target).getSelection();
+                    var task = Parser.parse($(e.target).val());
+                    User.updateInput(task, new User.Range(range.start, range.end));
                 }, 1);
             });
         });

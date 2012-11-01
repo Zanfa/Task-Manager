@@ -3,14 +3,12 @@ var Autocomplete = Autocomplete || {};
 /** @type {Array.<Parser.Tag>} */
 Autocomplete.Tags = [];
 
-
-
 /**
  * @param {Parser.Task} task
- * @param {number} cursorIndex
+ * @param {User.Range} range
  * @param {User.Action} action
  */
-Autocomplete.complete = function (task, cursorIndex, action) {
+Autocomplete.complete = function (task, range, action) {
     /** @type {number} */
     var i;
 
@@ -29,7 +27,7 @@ Autocomplete.complete = function (task, cursorIndex, action) {
         /** @type {Parser.Tag} */
         tag = task.tags[i];
 
-        if (tag.location < cursorIndex && cursorIndex <= tag.location + tag.getLength()) {
+        if (tag.location < range.start && range.start <= tag.location + tag.getLength()) {
             activeTag = tag;
 
             $("#activeWord").text(tag.action + tag.value);
@@ -43,7 +41,8 @@ Autocomplete.complete = function (task, cursorIndex, action) {
         var newValue = Autocomplete.completeTag(activeTag, action);
         Autocomplete.replaceTagValue(task, activeTag, newValue);
         var reparsedTask = Parser.parse(task.description);
-        User.updateInput(reparsedTask, activeTag.location + activeTag.getLength());
+        var selectionIndex = activeTag.location + activeTag.getLength();
+        User.updateInput(reparsedTask, new User.Range(selectionIndex, selectionIndex));
     }
 };
 

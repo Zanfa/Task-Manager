@@ -1,6 +1,6 @@
 var User = User || {};
 
-/** @enum */
+/** @enum {number} */
 User.Action = {
     TYPE: 0,
     BACKSPACE: 1,
@@ -8,12 +8,20 @@ User.Action = {
     AUTOCOMPLETE: 3
 };
 
+User.Range = function (start, end) {
+    /** @type {number} */
+    this.start = start;
+    
+    /** @type {number} */
+    this.end = end;
+};
+
 /**
  * @param {Parser.Task} task
- * @param {number} cursorIndex
+ * @param {User.Range} range
  */
-User.updateInput = function (task, cursorIndex) {
-    $("#task").val(task.description).focus().setSelection(cursorIndex);
+User.updateInput = function (task, range) {
+    $("#task").val(task.description).focus().setSelection(range.start, range.end);
 
     $('#decorated').html(task.decorate());
 
@@ -21,11 +29,11 @@ User.updateInput = function (task, cursorIndex) {
     var offsetSum = 0;
     var node = root.childNodes[0];
 
-    while (offsetSum < cursorIndex) {
+    while (offsetSum < range.start) {
         if (node.hasChildNodes())
             node = node.childNodes[0];
 
-        if (offsetSum + node.textContent.length < cursorIndex) {
+        if (offsetSum + node.textContent.length < range.start) {
             offsetSum += node.textContent.length;
             if (node.nextSibling)
                 node = node.nextSibling;
@@ -34,7 +42,7 @@ User.updateInput = function (task, cursorIndex) {
             continue;
         }
 
-        var offset = cursorIndex - offsetSum;
+        var offset = range.start - offsetSum;
         var cursorRange = rangy.createRange();
         cursorRange.setStart(node, offset);
         cursorRange.collapse(true);
@@ -42,6 +50,10 @@ User.updateInput = function (task, cursorIndex) {
         break;
     }
 
-    Autocomplete.complete(task, cursorIndex, User.Action.AUTOCOMPLETE);
+    Autocomplete.complete(task, range, User.Action.AUTOCOMPLETE);
+    User.resizeInput();
+};
 
+User.resizeInput = function () {
+    $("#task").height($('#decorated').height());
 };
