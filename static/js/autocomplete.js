@@ -37,12 +37,15 @@ Autocomplete.complete = function (task, range, action) {
     }
 
     if (activeTag && action !== User.Action.ARROW_KEY && action !== User.Action.AUTOCOMPLETE) {
-        /** @type {string} */
-        var newValue = Autocomplete.completeTag(activeTag, action);
-        Autocomplete.replaceTagValue(task, activeTag, newValue);
-        var reparsedTask = Parser.parse(task.description);
-        var selectionIndex = activeTag.location + activeTag.getLength();
-        User.updateInput(reparsedTask, new User.Range(selectionIndex, selectionIndex));
+        var tagMatches = Autocomplete.completeTag(activeTag, action);
+        console.log(tagMatches);
+        if (tagMatches.length === 1) {
+            var newTag = tagMatches[0];
+            Autocomplete.replaceTagValue(task, activeTag, newTag);
+            var reparsedTask = Parser.parse(task.description);
+            var selectionIndex = newTag.location + newTag.getLength();
+            User.updateInput(reparsedTask, new User.Range(selectionIndex, selectionIndex));
+        }
     }
 };
 
@@ -50,45 +53,45 @@ Autocomplete.complete = function (task, range, action) {
  * @param {Parser.Tag} tag
  * @param {User.Action} action
  *
- * @return {string}
+ * @return {Array.<Parser.Tag>|null}
  */
 Autocomplete.completeTag = function (tag, action) {
-    /** @type {number} */
-    var i;
-
-    /** @type {number} */
-    var len;
-
-    /** @type {Parser.Tag} */
-    var potentialMatchTag;
+    var i, len, newTag, matchTag, potentialMatches = [];
 
     if (action === User.Action.BACKSPACE) {
-        return "";
+        newTag = new Parser.Tag(tag.type, "", tag.action, tag.location);
+        return [newTag];
     }
 
     if (tag.type !== Parser.Tag.TYPE.UNKNOWN)
-        return tag.value;
+        return [tag];
 
     for (i = 0, len = Autocomplete.Tags.length; i < len; i++) {
-        potentialMatchTag = Autocomplete.Tags[i];
+        matchTag = Autocomplete.Tags[i];
 
-        if (potentialMatchTag.value.toUpperCase().startsWith(tag.value.toUpperCase()) &&
-                potentialMatchTag.value.toUpperCase() !== tag.value.toUpperCase() &&
-                Parser.Tag.doActionAndTypeMatch(tag, potentialMatchTag)) {
+        if (matchTag.value.toUpperCase().startsWith(tag.value.toUpperCase()) &&
+                matchTag.value.toUpperCase() !== tag.value.toUpperCase() &&
+                Parser.Tag.doActionAndTypeMatch(tag, matchTag)) {
 
-            return potentialMatchTag.value;
+            matchTag.action = tag.action;
+            matchTag.location = tag.location;
+
+            potentialMatches.push(matchTag);
         }
     }
 
-    return tag.value;
+    if (potentialMatches.length !== 0)
+        return potentialMatches;
+
+    return [tag];
 };
 
 /**
  * @param {Parser.Task} task
  * @param {Parser.Tag} tag
- * @param {string} newValue
+ * @param {Parser.Tag} newTag
  */
-Autocomplete.replaceTagValue = function (task, tag, newValue) {
+Autocomplete.replaceTagValue = function (task, tag, newTag) {
     /** @type {string} */
     var prefix;
 
@@ -96,8 +99,7 @@ Autocomplete.replaceTagValue = function (task, tag, newValue) {
     var suffix;
 
     prefix = task.description.substr(0, tag.location);
-    suffix = task.description.substr(tag.location + tag.getLength(), task.description.length);
-    tag.value = newValue;
+    suffix = task.description.substr(tag.location + newTag.getLength(), task.description.length);
 
-    task.description = prefix + tag.getValueWithAction() + suffix;
+    task.description = prefix + newTag.getValueWithAction() + suffix;
 };

@@ -16,6 +16,7 @@
     <script src="static/js/autocomplete.js"></script>
     <script>
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Vahur"));
+        Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Vatest"));
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Sujay"));
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Aaron"));
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.CATEGORY, "ENGINEERING"));
@@ -53,21 +54,65 @@
         });
 
     </script>
+    <style>
+        #decorated {
+            color: rgba(0, 0, 0, 0);
+        }
+
+        .taskWrapper {
+            position: relative;
+        }
+
+        .taskInput {
+            margin: 0;
+            padding: 5px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0);
+            font-size: 15pt;
+            overflow: hidden;
+            resize: none;
+            line-height: 120%;
+            word-break: break-word;
+        }
+
+        textarea:focus, textarea {
+            border: 1px solid #CCC;
+            box-shadow: none;
+            -webkit-box-shadow: none;
+            border-radius: 0;
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+        }
+
+        #helper {
+            position: absolute;
+            width: 50px;
+            height: 20px;
+            border-left: 5px solid #AAA;
+            border-top: 5px solid rgba(0, 0, 0, 0);
+            border-bottom: 0;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
     <div class="row-fluid" style="margin-top: 20px;">
         <div class="span6">
-            <textarea class="span12" id="task">Testing, find @Vahur and !Sujay, maybe see if #ENGINEERING is there also</textarea>
+            <div class="span12 taskWrapper">
+                <div class="taskInput" id="decorated" style="position: relative;"></div>
+                <textarea class="taskInput" id="task" spellcheck="false">Testing, find @Vahur and !Sujay, maybe see if #ENGINEERING is there also</textarea>
+                <div id="helper"></div>
+            </div>
             <h3>Suggestions</h3>
             <ul>
                 <li>Test</li>
             </ul>
         </div>
         <div class="span6">
-            <div class="span12" id="decorated"></div>
-
             <ul class="span12">
                 <li>Active Word: <span id="activeWord">tere</span></li>
             </ul>

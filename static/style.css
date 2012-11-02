@@ -23,6 +23,5 @@
 }
 
 .cursor {
-    background: #FF0000;
-    width: 1px;
+    background: rgba(0, 0, 0, 0);
 }

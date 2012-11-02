@@ -44,9 +44,12 @@ User.updateInput = function (task, range) {
 
         var offset = range.start - offsetSum;
         var cursorRange = rangy.createRange();
+        var cursorElement = $("<span class='cursor'>&nbsp;</span>");
         cursorRange.setStart(node, offset);
         cursorRange.collapse(true);
-        cursorRange.insertNode($("<span class='cursor'>&nbsp;</span>")[0]);
+        cursorRange.insertNode(cursorElement[0]);
+
+        User.positionHelper(cursorElement);
         break;
     }
 
@@ -56,4 +59,13 @@ User.updateInput = function (task, range) {
 
 User.resizeInput = function () {
     $("#task").height($('#decorated').height());
+};
+
+User.positionHelper = function (positioningElement) {
+    var offset = positioningElement.offset();
+    var helper = $("#helper");
+    console.log(offset.left);
+    helper.css("left", offset.left - $("#decorated").offset().left + 2);
+    helper.css("top", offset.top + 2);
+    console.log(helper.css("top"));
 };
