@@ -99,7 +99,7 @@ Autocomplete.replaceTagValue = function (task, tag, newTag) {
     var suffix;
 
     prefix = task.description.substr(0, tag.location);
-    suffix = task.description.substr(tag.location + newTag.getLength(), task.description.length);
+    suffix = task.description.substr(tag.location + tag.getLength(), task.description.length);
 
     task.description = prefix + newTag.getValueWithAction() + suffix;
 };
