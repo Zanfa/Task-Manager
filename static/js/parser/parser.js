@@ -14,6 +14,10 @@ Parser.parse = function (description, previouslyParsedTask) {
 
     while (result = Parser.TAG_REGEXP.exec(description)) {
         var i, len;
+
+        if (result.index !== 0 && description[result.index - 1] !== " ")
+            continue;
+
         tag = new Parser.Tag(Parser.Tag.TYPE.UNKNOWN, result[2], result[1], result.index);
 
         for (i = 0, len = Autocomplete.Tags.length; i < len; i++) {
