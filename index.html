@@ -16,7 +16,6 @@
     <script src="static/js/autocomplete.js"></script>
     <script>
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Vahur"));
-        Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Vatest"));
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Sujay"));
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Aaron"));
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.CATEGORY, "ENGINEERING"));
@@ -25,8 +24,8 @@
         var TEST_STRING = "Testing, find @Vahur and !Sujay, maybe see if #ENGINEERING is there also";
 
         $(function () {
-            var task = Parser.parse(TEST_STRING);
-            $('#decorated').html(task.decorate());
+            //var task = Parser.parse(TEST_STRING);
+            //$('#decorated').html(task.decorate());
 
             $("#task").keydown(function (e) {
                 setTimeout(function () {
@@ -68,6 +67,8 @@
         }
 
         .taskInput {
+            min-height: 28px !important;
+            height: 28px;
             margin: 0 5px;
             padding: 2px 5px;
             position: absolute;
@@ -173,7 +174,7 @@
         <div>
             <div class="taskWrapper">
                 <div class="taskInput" id="decorated" style="position: relative; background: white;"></div>
-                <textarea class="taskInput" id="task" spellcheck="false">Testing, find @Vahur and !Sujay, maybe see if #ENGINEERING is there also</textarea>
+                <textarea class="taskInput" id="task" spellcheck="false" placeholder="You can use @assign !notify #tag and drop files here"></textarea>
                 <div id="helper"></div>
                 <ul id="uploads" class="uploadContainer">
                     <li>

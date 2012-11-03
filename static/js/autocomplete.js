@@ -37,13 +37,13 @@ Autocomplete.complete = function (task, range, action) {
     }
 
     if (activeTag && action !== User.Action.ARROW_KEY && action !== User.Action.AUTOCOMPLETE) {
-        var tagMatches = Autocomplete.completeTag(activeTag, action);
+        var tagMatches = Autocomplete.completeTag(activeTag, action, range);
         console.log(tagMatches);
         if (tagMatches.length === 1) {
             var newTag = tagMatches[0];
             Autocomplete.replaceTagValue(task, activeTag, newTag);
             var reparsedTask = Parser.parse(task.description);
-            var selectionIndex = newTag.location + newTag.getLength();
+            var selectionIndex = newTag.location + newTag.getLength() + (newTag.getLength() !== 1 ? 1 : 0);
             User.updateInput(reparsedTask, new User.Range(selectionIndex, selectionIndex));
         }
     }
@@ -52,10 +52,11 @@ Autocomplete.complete = function (task, range, action) {
 /**
  * @param {Parser.Tag} tag
  * @param {User.Action} action
+ * @param {User.Range} range
  *
  * @return {Array.<Parser.Tag>|null}
  */
-Autocomplete.completeTag = function (tag, action) {
+Autocomplete.completeTag = function (tag, action, range) {
     var i, len, newTag, matchTag, potentialMatches = [];
 
     if (action === User.Action.BACKSPACE) {
@@ -92,14 +93,15 @@ Autocomplete.completeTag = function (tag, action) {
  * @param {Parser.Tag} newTag
  */
 Autocomplete.replaceTagValue = function (task, tag, newTag) {
-    /** @type {string} */
     var prefix;
-
-    /** @type {string} */
     var suffix;
+    var extraSpace = ""
 
     prefix = task.description.substr(0, tag.location);
     suffix = task.description.substr(tag.location + tag.getLength(), task.description.length);
 
-    task.description = prefix + newTag.getValueWithAction() + suffix;
+    if (newTag.getLength() !== 1 && newTag.type !== Parser.Tag.TYPE.UNKNOWN)
+        extraSpace = " ";
+
+    task.description = prefix + newTag.getValueWithAction() + extraSpace + suffix;
 };
