@@ -44,7 +44,7 @@ User.updateInput = function (task, range) {
 
         var offset = range.start - offsetSum;
         var cursorRange = rangy.createRange();
-        var cursorElement = $("<span class='cursor'>&nbsp;</span>");
+        var cursorElement = $("<span class='cursor'></span>");
         cursorRange.setStart(node, offset);
         cursorRange.collapse(true);
         cursorRange.insertNode(cursorElement[0]);

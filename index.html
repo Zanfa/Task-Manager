@@ -61,30 +61,41 @@
 
         .taskWrapper {
             position: relative;
+            width: 600px;
+            background: #F0F0F0;
+            padding: 5px 0 5px 0;
+            border: 1px solid #DDD;
         }
 
         .taskInput {
-            margin: 0;
-            padding: 5px;
+            margin: 0 5px;
+            padding: 2px 5px;
             position: absolute;
+            display: block;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 578px;
             background: rgba(0, 0, 0, 0);
             font-size: 15pt;
             overflow: hidden;
             resize: none;
-            line-height: 120%;
+            line-height: 140%;
             word-break: break-word;
+            border: 1px solid rgba(0, 0, 0, 0);
+        }
+
+        .taskInput {
+            border: 1px solid #DDD;
         }
 
         textarea:focus, textarea {
-            border: 1px solid #CCC;
+            border: 1px solid #888;
             box-shadow: none;
             -webkit-box-shadow: none;
             border-radius: 0;
             -webkit-border-radius: 0;
             -moz-border-radius: 0;
+            top: 5px !important;
         }
 
         #helper {
@@ -93,19 +104,93 @@
             height: 20px;
             border-left: 5px solid #AAA;
             border-top: 5px solid rgba(0, 0, 0, 0);
+            display: none;
             border-bottom: 0;
         }
+
+        .uploadContainer {
+            list-style: none;
+            margin: 5px 5px 0px 5px;
+            padding: 0 0 0 0;
+        }
+
+        .uploadContainer li {
+            margin: 0 0 0 5px;
+            padding: 0;
+            display: inline-block;
+            position: relative;
+        }
+
+        .uploadContainer li:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .uploadContainer li:hover .icon-file, .uploadContainer li:hover .icon-upload {
+            display: none;
+        }
+
+        .uploadContainer li .icon-remove {
+            display: none;
+        }
+
+        .uploadContainer li:hover .icon-remove {
+            display: inline-block;
+        }
+
+        .uploadContainer li:hover .icon-remove:active {
+            background-color: #222;
+            background-image: url(static/external/bootstrap/img/glyphicons-halflings-white.png);
+        }
+
+        .uploadProgress {
+            //background: rgba(211, 233, 146, 0.5);
+            background: rgba(128, 128, 128, 0.1);
+            position: absolute;
+            width: 65%;
+            top: 0;
+            left: 0;
+            height: 100%;
+        }
+
+        .uploadDone {
+            width: 0;
+        }
+
+        .file {
+            position: relative;
+            z-index: 2;
+        }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="row-fluid" style="margin-top: 20px;">
-        <div class="span6">
-            <div class="span12 taskWrapper">
-                <div class="taskInput" id="decorated" style="position: relative;"></div>
+    <div style="margin-top: 20px;">
+        <div>
+            <div class="taskWrapper">
+                <div class="taskInput" id="decorated" style="position: relative; background: white;"></div>
                 <textarea class="taskInput" id="task" spellcheck="false">Testing, find @Vahur and !Sujay, maybe see if #ENGINEERING is there also</textarea>
                 <div id="helper"></div>
+                <ul id="uploads" class="uploadContainer">
+                    <li>
+                        <span class="uploadProgress uploadDone"></span>
+                        <span class="file"><i class="icon-file"></i><i class="icon-remove"></i>Screenshot 1.png</span>
+                    </li>
+                    <li>
+                        <span class="uploadProgress"></span>
+                        <span class="file"><i class="icon-upload"></i><i class="icon-remove"></i>Screenshot 2.png</span>
+                    </li>
+                    <li>
+                        <span class="uploadProgress uploadDone"></span>
+                        <span class="file"><i class="icon-file"></i><i class="icon-remove"></i>Docs.pdf</span>
+                    </li>
+                    <li>
+                        <span class="uploadProgress uploadDone"></span>
+                        <span class="file"><i class="icon-file"></i><i class="icon-remove"></i>Bugreport.docx</span>
+                    </li>
+                </ul>
             </div>
             <h3>Suggestions</h3>
             <ul>
@@ -113,7 +198,7 @@
             </ul>
         </div>
         <div class="span6">
-            <ul class="span12">
+            <ul class="span6">
                 <li>Active Word: <span id="activeWord">tere</span></li>
             </ul>
         </div>
