@@ -13,6 +13,10 @@
     background: #C5EAF8;
 }
 
+.assign, .notify, .categorize {
+    border-radius: 2px;
+}
+
 .completable {
     cursor: pointer;
 }
