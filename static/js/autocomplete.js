@@ -37,10 +37,13 @@ Autocomplete.complete = function (task, range, action) {
     }
 
     if (activeTag && action !== User.Action.ARROW_KEY && action !== User.Action.AUTOCOMPLETE) {
+        /** @type {Array.<Parser.Tag>} */
         var tagMatches = Autocomplete.completeTag(activeTag, action, range);
-        console.log(tagMatches);
+
         if (tagMatches.length === 1) {
+            /** @type {Parser.Tag} */
             var newTag = tagMatches[0];
+
             Autocomplete.replaceTagValue(task, activeTag, newTag);
             var reparsedTask = Parser.parse(task.description);
             var selectionIndex = newTag.location + newTag.getLength() + (newTag.getLength() !== 1 ? 1 : 0);
@@ -95,7 +98,7 @@ Autocomplete.completeTag = function (tag, action, range) {
 Autocomplete.replaceTagValue = function (task, tag, newTag) {
     var prefix;
     var suffix;
-    var extraSpace = ""
+    var extraSpace = "";
 
     prefix = task.description.substr(0, tag.location);
     suffix = task.description.substr(tag.location + tag.getLength(), task.description.length);

@@ -14,6 +14,8 @@
     <script src="static/js/parser/tag.js"></script>
     <script src="static/js/parser/task.js"></script>
     <script src="static/js/autocomplete.js"></script>
+    <script src="static/js/upload/file.js"></script>
+    <script src="static/js/upload/upload.js"></script>
     <script>
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Vahur"));
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Sujay"));
@@ -24,10 +26,11 @@
         var TEST_STRING = "Testing, find @Vahur and !Sujay, maybe see if #ENGINEERING is there also";
 
         $(function () {
-            //var task = Parser.parse(TEST_STRING);
-            //$('#decorated').html(task.decorate());
+            var taskArea = $("#task");
+            Upload.setup(taskArea);
+            taskArea.focus();
 
-            $("#task").keydown(function (e) {
+            taskArea.keydown(function (e) {
                 setTimeout(function () {
                     var range = $(e.target).getSelection();
                     var task = Parser.parse($(e.target).val());
@@ -123,11 +126,6 @@
             position: relative;
         }
 
-        .uploadContainer li:hover {
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
         .uploadContainer li:hover .icon-file, .uploadContainer li:hover .icon-upload {
             display: none;
         }
@@ -138,6 +136,7 @@
 
         .uploadContainer li:hover .icon-remove {
             display: inline-block;
+            cursor: pointer;
         }
 
         .uploadContainer li:hover .icon-remove:active {
@@ -150,19 +149,33 @@
             //background: rgba(211, 233, 146, 0.5);
             background: rgba(128, 128, 128, 0.1);
             position: absolute;
-            width: 65%;
+            width: 0%;
             top: 0;
             left: 0;
             height: 100%;
         }
 
         .uploadDone {
-            width: 0;
+            width: 0 !important;
         }
 
         .file {
             position: relative;
             z-index: 2;
+        }
+
+        .filename {
+            color: #222;
+            cursor: pointer;
+        }
+
+        .filename:hover {
+            color: #222;
+        }
+
+        a.unclickable:hover {
+            text-decoration: none !important;
+            cursor: auto !important;
         }
 
     </style>
@@ -176,35 +189,12 @@
                 <div class="taskInput" id="decorated" style="position: relative; background: white;"></div>
                 <textarea class="taskInput" id="task" spellcheck="false" placeholder="You can use @assign !notify #tag and drop files here"></textarea>
                 <div id="helper"></div>
-                <ul id="uploads" class="uploadContainer">
-                    <li>
-                        <span class="uploadProgress uploadDone"></span>
-                        <span class="file"><i class="icon-file"></i><i class="icon-remove"></i>Screenshot 1.png</span>
-                    </li>
-                    <li>
-                        <span class="uploadProgress"></span>
-                        <span class="file"><i class="icon-upload"></i><i class="icon-remove"></i>Screenshot 2.png</span>
-                    </li>
-                    <li>
-                        <span class="uploadProgress uploadDone"></span>
-                        <span class="file"><i class="icon-file"></i><i class="icon-remove"></i>Docs.pdf</span>
-                    </li>
-                    <li>
-                        <span class="uploadProgress uploadDone"></span>
-                        <span class="file"><i class="icon-file"></i><i class="icon-remove"></i>Bugreport.docx</span>
-                    </li>
-                </ul>
+                <ul id="uploads" class="uploadContainer" style="display: none;"></ul>
             </div>
-            <h3>Suggestions</h3>
-            <ul>
-                <li>Test</li>
-            </ul>
         </div>
-        <div class="span6">
-            <ul class="span6">
+            <ul class="span6" style="display: none;">
                 <li>Active Word: <span id="activeWord">tere</span></li>
             </ul>
-        </div>
     </div>
 </div>
 
