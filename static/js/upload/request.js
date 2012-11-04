@@ -13,17 +13,27 @@ Upload.Request = function (url, file) {
 
 /** @private */
 Upload.Request.prototype.getSignature = function () {
-    var params = {
-        key: "uploads/${filename}",
-        AWSAccessKeyId: "AKIAJWT3W6BKEXJKPDDA",
-        acl: "public-read",
-        success_action_redirect: "http://localhost:8000/",
-        policy: "eyJleHBpcmF0aW9uIjoiMjAxMy0wMS0wMVQwMDowMDowMFoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJjby5waG90YXRvLnJhd2ltYWdlcyJ9LFsic3RhcnRzLXdpdGgiLCIka2V5IiwidXBsb2Fkcy8iXSx7ImFjbCI6InB1YmxpYy1yZWFkIn0seyJzdWNjZXNzX2FjdGlvbl9yZWRpcmVjdCI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC8ifSxbInN0YXJ0cy13aXRoIiwiJENvbnRlbnQtVHlwZSIsImltYWdlL3BuZyJdLFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3Nl1dfQ==",
-        signature: "1sL+NA1ua53qZfinaXFTUi5L+wI=",
-        "Content-Type": "image/png"
+    var t, file, data;
+    t = this;
+    file = this.file.file, data;
+
+    data = {
+        fileSize: file.size,
+        fileName: file.name,
+        fileType: file.type
     }
 
-    this.buildUploadRequest(params);
+    $.ajax({
+        type: "post",
+        url: "/generatePolicy",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        dataType: "json",
+        success: function(json) {
+            console.log(json);
+            t.buildUploadRequest(json);
+        }
+    });
 };
 
 /** @private */
@@ -34,7 +44,7 @@ Upload.Request.prototype.buildUploadRequest = function (requestData) {
     request = new XMLHttpRequest();
     formData = new FormData();
 
-    request.addEventListener("progress", function (e) {
+    request.upload.addEventListener("progress", function (e) {
         t.onProgress(request, e);
     }, false);
 
