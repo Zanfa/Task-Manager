@@ -18,7 +18,6 @@ Upload.onDragOver = function (e) {
 };
 
 Upload.onDragLeave = function (e) {
-    console.log("drag exit");
     $(".dragOver").removeClass("dragOver");
 
     e.preventDefault();

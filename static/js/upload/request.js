@@ -30,7 +30,6 @@ Upload.Request.prototype.getSignature = function () {
         data: JSON.stringify(data),
         dataType: "json",
         success: function(json) {
-            console.log(json);
             t.buildUploadRequest(json);
         }
     });
