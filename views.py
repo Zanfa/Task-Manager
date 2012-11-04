@@ -14,7 +14,13 @@ def main():
 
 @app.route('/uploaded')
 def uploaded():
-    response = make_response("done")
+    uploadData = {
+        "bucket": request.args.get("bucket", ""),
+        "key": request.args.get("key", ""),
+        "etag": request.args.get("etag", "")
+    }
+
+    response = make_response(jsonify(uploadData))
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 

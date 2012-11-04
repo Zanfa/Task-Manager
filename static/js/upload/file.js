@@ -6,6 +6,8 @@ var Upload = Upload || {};
 Upload.File = function (file) {
     this.file = file;
 
+    this.uploadRequest = null;
+
     this.setupUI();
     this.startUpload();
 };
@@ -17,7 +19,8 @@ Upload.File.prototype.setupUI = function () {
     t = this;
     this.fileElement = $("<li>" +
         "<span class=\"uploadProgress\"></span>" +
-        "<span class=\"file\"><i class=\"icon-upload\"></i><i class=\"icon-remove\"></i><a target=\"_blank\" class=\"filename unclickable\"></a></span>" +
+        "<span class=\"file\"><i class=\"icon-upload\"></i><i class=\"icon-remove\">" +
+        "</i><a target=\"_blank\" class=\"filename unclickable\"></a></span>" +
         "</li>");
 
     this.fileElement.find(".filename").text(Upload.File.trimFilename(this.file.name));
@@ -39,6 +42,7 @@ Upload.File.prototype.onRemove = function (e) {
 
     if (e.metaKey || confirmRemove) {
         this.fileElement.remove();
+        this.uploadRequest.cancel();
         fileList = $("#uploads");
         if (fileList.children().length === 0)
             fileList.hide();
@@ -48,7 +52,7 @@ Upload.File.prototype.onRemove = function (e) {
 
 /** @private */
 Upload.File.prototype.startUpload = function () {
-    new Upload.Request("http://co.photato.rawimages.s3.amazonaws.com/", this);
+    this.uploadRequest = new Upload.Request("http://co.photato.rawimages.s3.amazonaws.com/", this);
 };
 
 Upload.File.prototype.onUploadComplete = function () {
