@@ -1,3 +1,4 @@
+from flask import make_response
 from flask.globals import request
 from flask.templating import render_template
 from util.task_parser import decorate
@@ -6,7 +7,11 @@ from server import app, mongo
 
 @app.route('/')
 def main():
-    return user_home(user='Vahur')
+    response = make_response(render_template("index.html"))
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
+    #return render_template("index.html")
+    #return user_home(user='Vahur')
 
 @app.route('/<user>')
 def user_home(user=None):

@@ -48,30 +48,16 @@ Upload.File.prototype.onRemove = function (e) {
 
 /** @private */
 Upload.File.prototype.startUpload = function () {
-    var t, intervalHandler, progress;
-    t = this;
-    progress = 0;
-    intervalHandler = setInterval(function () {
-        progress += Math.random() * 10 + 5;
-        t.onProgress(progress);
-
-        if (progress >= 100)
-            clearInterval(intervalHandler);
-    }, Math.random() * 300 + 300);
+    new Upload.Request("http://co.photato.rawimages.s3.amazonaws.com/", this);
 };
 
 Upload.File.prototype.onUploadComplete = function () {
     this.fileElement.find(".icon-upload").removeClass("icon-upload").addClass("icon-file");
     this.fileElement.find(".uploadProgress").addClass("uploadDone");
-    this.fileElement.find(".unclickable").removeClass("unclickable").attr({
-        href: "http://www.google.com",
-
-    });
+    this.fileElement.find(".unclickable").removeClass("unclickable").attr("href", "http://www.google.com");
 };
 
 /**
- * @private
- *
  * @param {number} progress
  */
 Upload.File.prototype.onProgress = function (progress) {

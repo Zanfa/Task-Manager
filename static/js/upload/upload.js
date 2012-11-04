@@ -3,11 +3,13 @@ var Upload = Upload || {};
 Upload.setup = function (target) {
     target[0].addEventListener("dragover", Upload.onDragOver, false);
     target[0].addEventListener("dragenter", Upload.onDragEnter, false);
-    target[0].addEventListener("dragexit", Upload.onDragExit, false);
+    target[0].addEventListener("dragleave", Upload.onDragLeave, false);
     target[0].addEventListener("drop", Upload.onDrop, false);
 };
 
 Upload.onDragEnter = function (e) {
+    $(e.target).addClass("dragOver");
+
     e.preventDefault();
 };
 
@@ -15,11 +17,16 @@ Upload.onDragOver = function (e) {
     e.preventDefault();
 };
 
-Upload.onDragExit = function (e) {
+Upload.onDragLeave = function (e) {
+    console.log("drag exit");
+    $(".dragOver").removeClass("dragOver");
+
     e.preventDefault();
 };
 
 Upload.onDrop = function (e) {
+    $(".dragOver").removeClass("dragOver");
+
     e.preventDefault();
     Upload.handleFiles(e.dataTransfer.files)
 };

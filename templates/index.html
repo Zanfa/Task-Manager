@@ -15,6 +15,7 @@
     <script src="static/js/parser/task.js"></script>
     <script src="static/js/autocomplete.js"></script>
     <script src="static/js/upload/file.js"></script>
+    <script src="static/js/upload/request.js"></script>
     <script src="static/js/upload/upload.js"></script>
     <script>
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Vahur"));
@@ -176,6 +177,11 @@
         a.unclickable:hover {
             text-decoration: none !important;
             cursor: auto !important;
+        }
+
+        .dragOver {
+            background: rgba(0, 0, 0, 0.1);
+            border-color: #888;
         }
 
     </style>
