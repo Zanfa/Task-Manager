@@ -16,8 +16,8 @@ def main():
 def uploaded():
     uploadData = {
         "bucket": request.args.get("bucket", ""),
-        "key": request.args.get("key", ""),
-        "etag": request.args.get("etag", "")
+        "key": request.args.get("key", "") #,
+        # "etag": request.args.get("etag", "")
     }
 
     response = make_response(jsonify(uploadData))
