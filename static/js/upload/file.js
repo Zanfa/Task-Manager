@@ -6,7 +6,7 @@ var Upload = Upload || {};
 Upload.File = function (file) {
     this.file = file;
 
-    this.url = url;
+    this.url = null;
     this.uploadRequest = null;
 
     this.setupUI();
@@ -64,8 +64,10 @@ Upload.File.prototype.onComplete = function (url) {
     this.fileElement.find(".uploadProgress").addClass("uploadDone");
     this.fileElement.find(".unclickable").removeClass("unclickable").attr("href", "http://www.google.com");
 
-    if (url)
+    if (url) {
+        this.url = url;
         this.fileElement.find("a").attr("href", url);
+    }
 };
 
 /**

@@ -17,6 +17,7 @@
     <script src="static/js/upload/file.js"></script>
     <script src="static/js/upload/request.js"></script>
     <script src="static/js/upload/upload.js"></script>
+    <script src="static/js/api/api.js"></script>
     <script>
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Vahur"));
         Autocomplete.Tags.push(new Parser.Tag(Parser.Tag.TYPE.USER, "Sujay"));
@@ -32,6 +33,17 @@
             taskArea.focus();
 
             taskArea.keydown(function (e) {
+
+                if (e.keyCode === 13) {
+                    API.createTask(Parser.parse($(e.target).val()), Upload.files, function (json) {
+                        console.log(json);
+                    });
+
+                    e.preventDefault();
+                    return;
+                }
+
+
                 setTimeout(function () {
                     var range = $(e.target).getSelection();
                     var task = Parser.parse($(e.target).val());
