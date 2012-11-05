@@ -75,6 +75,7 @@
         }
 
         .taskWrapper {
+            margin: 20px auto;
             position: relative;
             width: 600px;
             background: #F0F0F0;
@@ -84,7 +85,6 @@
 
         .taskInput {
             min-height: 28px !important;
-            height: 28px;
             margin: 0 5px;
             padding: 2px 5px;
             position: absolute;
@@ -104,6 +104,10 @@
 
         .taskInput {
             border: 1px solid #DDD;
+        }
+
+        textarea.taskInput {
+            height:  28px;
         }
 
         textarea:focus, textarea {
@@ -141,6 +145,10 @@
 
         .uploadContainer li:hover .icon-file, .uploadContainer li:hover .icon-upload {
             display: none;
+        }
+
+        .uploadContainer li:hover .uploaded .icon-file {
+            display: inline-block;
         }
 
         .uploadContainer li .icon-remove {
@@ -196,6 +204,28 @@
             border-color: #888;
         }
 
+        .tasklist {
+            -webkit-column-width: 380px;
+            -moz-column-width: 380px;
+            -o-column-width: 380px;
+            column-width: 380px;
+        }
+
+        .task {
+            background: #EEE;
+            margin: 0 0 10px 0;
+            -webkit-column-break-inside: avoid;
+            -moz-column-break-inside: avoid;
+            -o-column-break-inside: avoid;
+            column-break-inside: avoid;
+            width: 380px;
+            display: inline-block;
+        }
+
+        .task:first-child {
+            //margin-top: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -208,6 +238,25 @@
                 <textarea class="taskInput" id="task" spellcheck="false" placeholder="You can use @assign !notify #tag and drop files here"></textarea>
                 <div id="helper"></div>
                 <ul id="uploads" class="uploadContainer" style="display: none;"></ul>
+            </div>
+            <div class="tasklist center">
+                {% for task in tasks %}
+                    <div class="task">
+                        {{ task.description|safe }}
+                        {% if task["files"]|length > 0 %}
+                            <ul class="uploadContainer">
+                                {% for file in task["files"] %}
+                                    <li>
+                                        <span class="file uploaded">
+                                            <i class="icon-file"></i>
+                                            <a href="{{ file }}" target="_blank" class="filename">File</a>
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% endfor %}
             </div>
         </div>
             <ul class="span6" style="display: none;">

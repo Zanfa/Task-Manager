@@ -9,4 +9,5 @@ from server import app, mongo
 
 @app.route('/')
 def main():
-    return render_template("index.html")
+    tasks = mongo.db.Tasks.find()
+    return render_template("index.html", tasks=tasks)
