@@ -35,9 +35,14 @@
             taskArea.keydown(function (e) {
 
                 if (e.keyCode === 13) {
-                    API.createTask(Parser.parse($(e.target).val()), Upload.files, function (json) {
-                        console.log(json);
-                    });
+                    var taskText = $(e.target).val();
+
+                    if (taskText.length !== 0) {
+                        API.createTask(Parser.parse(taskText), Upload.files, function (json) {
+                            console.log(json);
+                            window.location = window.location;
+                        });
+                    }
 
                     e.preventDefault();
                     return;
@@ -242,7 +247,7 @@
             <div class="tasklist center">
                 {% for task in tasks %}
                     <div class="task">
-                        {{ task.description|safe }}
+                        {{ task.decorated|safe }}
                         {% if task["files"]|length > 0 %}
                             <ul class="uploadContainer">
                                 {% for file in task["files"] %}
