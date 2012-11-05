@@ -45,7 +45,7 @@ Upload.Request.prototype.buildUploadRequest = function (requestData) {
     this.request = new XMLHttpRequest();
     formData = new FormData();
 
-    this.request.upload.addEventListener("progress", function (e) {
+    this.request.addEventListener("progress", function (e) {
         t.onProgress(e);
     }, false);
 
