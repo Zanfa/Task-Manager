@@ -6,6 +6,7 @@ var Upload = Upload || {};
 Upload.File = function (file) {
     this.file = file;
 
+    this.url = url;
     this.uploadRequest = null;
 
     this.setupUI();
@@ -55,10 +56,16 @@ Upload.File.prototype.startUpload = function () {
     this.uploadRequest = new Upload.Request("http://co.photato.rawimages.s3.amazonaws.com/", this);
 };
 
-Upload.File.prototype.onUploadComplete = function () {
+/**
+ * @param {string=} url
+ */
+Upload.File.prototype.onComplete = function (url) {
     this.fileElement.find(".icon-upload").removeClass("icon-upload").addClass("icon-file");
     this.fileElement.find(".uploadProgress").addClass("uploadDone");
     this.fileElement.find(".unclickable").removeClass("unclickable").attr("href", "http://www.google.com");
+
+    if (url)
+        this.fileElement.find("a").attr("href", url);
 };
 
 /**
@@ -66,7 +73,7 @@ Upload.File.prototype.onUploadComplete = function () {
  */
 Upload.File.prototype.onProgress = function (progress) {
     if (progress >= 100) {
-        this.onUploadComplete();
+        this.onComplete();
         return;
     }
 

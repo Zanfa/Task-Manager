@@ -84,7 +84,12 @@ Upload.Request.prototype.onProgress = function (e) {
  * @param {XMLHttpRequestProgressEvent} e
  */
 Upload.Request.prototype.onLoad = function (e) {
-    this.file.onProgress(100);
+    var url, json;
+
+    json = JSON.parse(this.request.response);
+    url = "https://s3.amazonaws.com/" + json.bucket + "/" + json.key;
+
+    this.file.onComplete(url);
 };
 
 /** @private */
