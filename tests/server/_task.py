@@ -1,5 +1,5 @@
 import unittest
-from util.task import Task
+from server.util.task import Task
 
 class TestTask(unittest.TestCase):
     def testAssignNotify(self):
