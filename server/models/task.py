@@ -47,6 +47,7 @@ class Tag(object):
 
         return "<span class=\"" + className + "\">" + self.value + "</span>"
 
+    @staticmethod
     def from_json(json):
         """Validate client-sent JSON and create a new Tag if it's valid"""
 
@@ -81,6 +82,7 @@ class File(object):
 
         return self.name
 
+    @staticmethod
     def from_json(json):
         """Validate client-sent JSON and create a new File if it's valid"""
 
@@ -107,6 +109,7 @@ class Task(object):
         self.tags = []
         self.files = []
 
+    @staticmethod
     def from_json(json):
         """Validate client generated JSON and force it into standardized format"""
 
