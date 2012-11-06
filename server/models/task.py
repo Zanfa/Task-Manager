@@ -105,9 +105,9 @@ class Task(object):
     """Task with all it's accompanying tags, files, usually parsed from user submitted JSON"""
 
     def __init__(self, description, tags, files):
-        self.description = ""
-        self.tags = []
-        self.files = []
+        self.description = description
+        self.tags = tags
+        self.files = files
 
     def decorate(self):
         """Generate the HTML-decorated description of the task"""
