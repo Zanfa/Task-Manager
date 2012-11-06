@@ -109,6 +109,24 @@ class Task(object):
         self.tags = []
         self.files = []
 
+    def decorate(self):
+        """Generate the HTML-decorated description of the task"""
+
+        result = self.description
+
+        # Go through the tags backwards to prevent messing up tag locations
+        for tag in reversed(self.tags):
+            if tag.type == Tag.Target.UNKNOWN:
+                continue;
+
+            prefix = result[0, tag.location]
+            value = result[tag.location, tag.location + tag.get_length()]
+            suffix = result[tag.location + tag.get_length():]
+
+            result = prefix + tag.decorate() + suffix
+
+        return result
+
     @staticmethod
     def from_json(json):
         """Validate client generated JSON and force it into standardized format"""
@@ -122,6 +140,9 @@ class Task(object):
         for i, tag in enumerate(json["tags"]):
             json["tags"][i] = Tag.from_json(tag)
 
+        # Sort tags in ascending order by location, useful when decorating
+        json["tags"] = sorted(json["tags"], key=lambda tag: tag.location)
+
         if type(json["files"]) != list:
             raise InvalidJSONException("Files must be a list of Files")
 
@@ -129,7 +150,3 @@ class Task(object):
             json["files"][i] = File.from_json(file)
 
         return Task(json["description"], json["tags"], json["files"])
-
-
-
-
