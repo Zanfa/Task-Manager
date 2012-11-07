@@ -6,7 +6,7 @@ class InvalidJSONException(Exception):
 class Tag(object):
     """Tag that represents a user, group or a category of tasks"""
 
-    class Target:
+    class TargetType:
         USER = 0
         GROUP = 1
         CATEGORY = 2
@@ -22,18 +22,18 @@ class Tag(object):
         NOTIFY = "notify"
         CATEGORIZE = "categorize"
 
-    def __init__(self, type, value, action, location):
-        self.type = type
-        self.value = value
+    def __init__(self, targetType, target, action, location):
+        self.targetType = targetType
+        self.target = target
         self.action = action
         self.location = location
 
     def __str__(self):
-        return self.action + self.value
+        return self.action + self.target
 
     def get_length(self):
         """Calculate the total length of the tag's string representation"""
-        return len(self.value) + len(self.action)
+        return len(self.target) + len(self.action)
 
     def decorate(self):
         """Wrap the tag in a decorated span tag, based on tag's action"""
@@ -45,17 +45,20 @@ class Tag(object):
         else:
             className = Tag.DecoratorClass.CATEGORIZE
 
-        return "<span class=\"" + className + "\">" + self.value + "</span>"
+        return "<span class=\"" + className + "\">" + self.action + self.target + "</span>"
 
     @staticmethod
     def from_json(json):
         """Validate client-sent JSON and create a new Tag if it's valid"""
 
-        if type(json["type"]) != int:
-            raise InvalidJSONException("Tag type must be an int")
+        if "targetType" not in json or "target" not in json or "action" not in json or "location" not in json:
+            raise InvalidJSONException("Tag must have a type, a value, an action and a location")
 
-        if type(json["value"]) != str:
-            raise InvalidJSONException("Tag value must be a string")
+        if type(json["targetType"]) != int:
+            raise InvalidJSONException("Tag targetType must be an int")
+
+        if type(json["target"]) != str:
+            raise InvalidJSONException("Tag target must be a string")
 
         if type(json["action"]) != str:
             raise InvalidJSONException("Tag action must be a string")
@@ -63,7 +66,7 @@ class Tag(object):
         if type(json["location"]) != int:
             raise InvalidJSONException("Tag location must be an int")
 
-        return Tag(json["type"], json["value"], json["action"], json["location"])
+        return Tag(json["targetType"], json["target"], json["action"], json["location"])
 
 
 class File(object):
@@ -86,6 +89,9 @@ class File(object):
     def from_json(json):
         """Validate client-sent JSON and create a new File if it's valid"""
 
+        if "name" not in json or "url" not in json or "size" not in json or "contentType" not in json:
+            raise InvalidJSONException("File must have a name, an url, size and a contentType")
+
         if type(json["name"]) != str:
             raise InvalidJSONException("File name must be a string")
 
@@ -95,7 +101,7 @@ class File(object):
         if type(json["size"]) != int:
             raise InvalidJSONException("File size must be an int")
 
-        if type(json["contentType"]) != int:
+        if type(json["contentType"]) != str:
             raise InvalidJSONException("File content type must be a string")
 
         return File(json["name"], json["url"], json["size"], json["contentType"])
@@ -109,6 +115,9 @@ class Task(object):
         self.tags = tags
         self.files = files
 
+        # Sort tags in ascending order by location, useful when decorating
+        self.tags = sorted(self.tags, key=lambda tag: tag.location)
+
     def decorate(self):
         """Generate the HTML-decorated description of the task"""
 
@@ -116,11 +125,11 @@ class Task(object):
 
         # Go through the tags backwards to prevent messing up tag locations
         for tag in reversed(self.tags):
-            if tag.type == Tag.Target.UNKNOWN:
+            if tag.targetType == Tag.TargetType.UNKNOWN:
                 continue;
 
-            prefix = result[0, tag.location]
-            value = result[tag.location, tag.location + tag.get_length()]
+            prefix = result[0: tag.location]
+            value = result[tag.location: tag.location + tag.get_length()]
             suffix = result[tag.location + tag.get_length():]
 
             result = prefix + tag.decorate() + suffix
@@ -131,6 +140,9 @@ class Task(object):
     def from_json(json):
         """Validate client generated JSON and force it into standardized format"""
 
+        if "description" not in json or "tags" not in json or "files" not in json:
+            raise InvalidJSONException("Task must have a description, a list of tags and a list of files")
+
         if type(json["description"]) != str:
             raise InvalidJSONException("Description must be a string")
 
@@ -139,9 +151,6 @@ class Task(object):
 
         for i, tag in enumerate(json["tags"]):
             json["tags"][i] = Tag.from_json(tag)
-
-        # Sort tags in ascending order by location, useful when decorating
-        json["tags"] = sorted(json["tags"], key=lambda tag: tag.location)
 
         if type(json["files"]) != list:
             raise InvalidJSONException("Files must be a list of Files")
