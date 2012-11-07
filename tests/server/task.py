@@ -72,6 +72,16 @@ class TestTask(unittest.TestCase):
             "action": Tag.Action.ASSIGN,
         })
 
+    def test_tag_is_completed(self):
+        # Test tag with isCompleted set to True
+        self.assertTrue(Tag.from_json({
+            "targetType": 0,
+            "target": "Test",
+            "action": Tag.Action.ASSIGN,
+            "location": 0,
+            "isCompleted": True
+        }).is_completed)
+
     def test_file_parsing_type_validation(self):
         # Test valid JSON
         self.assertIsInstance(File.from_json({
@@ -206,6 +216,14 @@ class TestTask(unittest.TestCase):
         task = Task("@Test abc !Test2 his and", [tag, tag2], [])
 
         self.assertEqual("<span class=\"assign\">@Test</span> abc <span class=\"notify\">!Test2</span> his and",
+            task.decorate())
+
+    def test_task_completed_tag_decoration(self):
+        tag = Tag(Tag.TargetType.USER, "Test", Tag.Action.ASSIGN, 0)
+        tag2 = Tag(Tag.TargetType.GROUP, "Test2", Tag.Action.NOTIFY, 10, True)
+        task = Task("@Test abc !Test2 his and", [tag, tag2], [])
+
+        self.assertEqual("<span class=\"assign\">@Test</span> abc <span class=\"notify completed\">!Test2</span> his and",
             task.decorate())
 
     def test_task_tag_order(self):

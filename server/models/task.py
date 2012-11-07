@@ -21,12 +21,14 @@ class Tag(object):
         ASSIGN = "assign"
         NOTIFY = "notify"
         CATEGORIZE = "categorize"
+        COMPLETED = "completed"
 
-    def __init__(self, targetType, target, action, location):
+    def __init__(self, targetType, target, action, location, is_completed=False):
         self.targetType = targetType
         self.target = target
         self.action = action
         self.location = location
+        self.is_completed = is_completed
 
     def __str__(self):
         return self.action + self.target
@@ -44,6 +46,9 @@ class Tag(object):
             className = Tag.DecoratorClass.NOTIFY
         else:
             className = Tag.DecoratorClass.CATEGORIZE
+
+        if self.is_completed:
+            className += " " + Tag.DecoratorClass.COMPLETED
 
         return "<span class=\"" + className + "\">" + self.action + self.target + "</span>"
 
@@ -66,7 +71,11 @@ class Tag(object):
         if type(json["location"]) != int:
             raise InvalidJSONException("Tag location must be an int")
 
-        return Tag(json["targetType"], json["target"], json["action"], json["location"])
+        is_completed = False
+        if "isCompleted" in json and type(json["isCompleted"]) == bool:
+            is_completed = json["isCompleted"]
+
+        return Tag(json["targetType"], json["target"], json["action"], json["location"], is_completed)
 
 
 class File(object):
