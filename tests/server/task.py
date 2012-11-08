@@ -231,8 +231,11 @@ class TestTask(unittest.TestCase):
         tag2 = Tag(Tag.TargetType.GROUP, "Test2", Tag.Action.NOTIFY, 15)
         task = Task("abcd @Test abc !Test2 his and", [tag, tag2], [])
 
-        self.assertEqual("abcd <span class=\"assign\">@Test</span> abc <span class=\"notify\">!Test2</span> his and",
+        self.assertEqual("abcd <span class=\"assign\">@Test</span> abc <span class=\"categorize\">!Test2</span> his and",
             task.decorate())
+
+        #self.assertEqual("abcd <span class=\"assign\">@Test</span> abc <span class=\"notify\">!Test2</span> his and",
+        #    task.decorate())
 
     """def test_task_full_parse(self):
         # Test valid JSON
